@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>Manga Viewer</title>
+  <title>Translation Viewer</title>
   <style>
     body {
       font-family: sans-serif;
@@ -29,8 +29,8 @@
 </head>
 <body>
 
-<h1>Manga Viewer</h1>
-<p>作品番号を URL に ?work=101 のように指定してください。</p>
+<h1>Translation Viewer</h1>
+<p>attention: Do not repost or use my artworks!</p>
 
 <div id="content"></div>
 
@@ -64,6 +64,7 @@
 
           const img = document.createElement("img");
           img.src = IMAGE_BASE + item.image_path;
+          img.loading = "lazy";
 
           const text = document.createElement("div");
           text.className = "text";
