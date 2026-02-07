@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>Manga Viewer</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    .page {
+      margin-bottom: 40px;
+    }
+    .page img {
+      width: 100%;
+      border: 1px solid #ccc;
+      margin-bottom: 10px;
+    }
+    .text {
+      white-space: pre-wrap;
+      background: #f7f7f7;
+      padding: 10px;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Manga Viewer</h1>
+<p>作品番号を URL に ?work=101 のように指定してください。</p>
+
+<div id="content"></div>
+
+<script>
+  // ★ GAS Web API の URL
+  const API_URL = "https://script.google.com/macros/s/AKfycbxlGfUfsH_BW3rCha8lbPu0yRI4I_G9xkpdpWyvPXMGtpmDhY7oGcIpilUWJzDuxi28pg/exec";
+
+  // ★ Cloud Storage の画像URLのベース
+  const IMAGE_BASE = "https://storage.googleapis.com/translation-km/";
+
+  // URLパラメータから work を取得
+  const params = new URLSearchParams(window.location.search);
+  const work = params.get("work");
+
+  if (!work) {
+    document.getElementById("content").innerHTML = "<p>work パラメータが必要です。</p>";
+  } else {
+    fetch(API_URL + "?work=" + work)
+      .then(res => res.json())
+      .then(data => {
+        const container = document.getElementById("content");
+
+        if (data.length === 0) {
+          container.innerHTML = "<p>データが見つかりません。</p>";
+          return;
+        }
+
+        data.forEach(item => {
+          const div = document.createElement("div");
+          div.className = "page";
+
+          const img = document.createElement("img");
+          img.src = IMAGE_BASE + item.image_path;
+
+          const text = document.createElement("div");
+          text.className = "text";
+          text.textContent = item.text;
+
+          div.appendChild(img);
+          div.appendChild(text);
+          container.appendChild(div);
+        });
+      })
+      .catch(err => {
+        document.getElementById("content").innerHTML = "<p>エラーが発生しました。</p>";
+        console.error(err);
+      });
+  }
+</script>
+
+</body>
+</html>
